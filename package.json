@@ -1,0 +1,20 @@
+{
+  "name": "bitecm_notifications",
+  "version": "1.0.0",
+  "description": "Queue and Notifications for Bitel Store",
+  "main": "bitecm_server.js",
+  "scripts": {
+    "start": "NODE_ENV=production node bitecm_server"
+  },
+  "author": "Rodolfo Tomas Taboada Alvines <rodolfotabo@gmail.com>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.17.1",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "level": "^2.1.1",
+    "level-jobs": "^2.0.0",
+    "socket.io": "^2.0.4"
+  }
+}
