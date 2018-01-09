@@ -6,8 +6,17 @@ var Jobs = require('level-jobs');
 
 var Services = require('./bitecm_services');
 
-var maxConcurrency = 1;
-var queue = Jobs(db, worker, maxConcurrency);
+var options = {
+  maxConcurrency: Infinity,
+  maxRetries: 10,
+  backoff: {
+    randomisationFactor: 0,
+    initialDelay:10,
+    maxDelay: 300
+  }
+};
+
+var queue = Jobs(db, worker, options);
 
 module.exports = queue;
 
@@ -20,11 +29,11 @@ function worker (id, payload, callback) {
 }
 
 function sendRequest (payload, callback) {
-  var service = Services();
-  var url = 'http://bitel-store.clientes-forceclose.com';
   var err;
+  var service = Services();
+  var url = 'https://6df279fe-0da5-487d-a03f-5d4774bd871e.mock.pstmn.io/check_porting_status';
 
-  service.sendGetRequest(url).then(function (success) {
+  service.checkPortingStatus(url, payload).then(function (success) {
     if (!success) err = Error('Error in request.');
     callback(err);
   });

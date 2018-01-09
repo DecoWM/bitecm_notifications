@@ -10,24 +10,18 @@ var axios = require('axios');
 function Services () {
   self = {};
 
-  self.sendGetRequest = function (url, config = []) {
-    var request = axios.get(url, config)
+  self.checkPortingStatus = function (url, data = {}, config = []) {
+    var request = axios.post(url, data, config)
       .then(function (response) {
-        console.log("GET Correcto");
-        return true;
-      })
-      .catch(function (err) {
-        console.log("GET Error");
-        return false;
-      });
-    return request;
-  };
-
-  self.sendPostRequest = function (url, data = {}, config = []) {
-    axios.post(url, data, config)
-      .then(function (response) {
-        console.log("POST Correcto");
-        return true;
+        console.log(response.data);
+        if (response.data == true) {
+          console.log("POST Correcto");
+          return true;
+        }
+        else {
+          console.log("POST Error");
+          return false;
+        }
       })
       .catch(function (err) {
         console.log("POST Error");

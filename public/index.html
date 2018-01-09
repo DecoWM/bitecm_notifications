@@ -24,8 +24,8 @@
 
         connect();
 
-        socket.on('new order', function (data) {
-          $('#app').append('<br>' + data.msg);
+        socket.on('order completed', function (data) {
+          $('#app').append('<br>' + JSON.stringify(data));
         });
 
         socket.on('disconnect', function () {
