@@ -12,11 +12,11 @@ var port = process.env.PORT || 3000;
 var worker = require('./bitecm_worker');
 
 //CORS
-var allowedOrigins = [ 'http://localhost:3000', 'http://bitel.com.pe' ];
+var allowedOrigins = [ ];
 var corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (!allowedOrigins.length || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'), false);
