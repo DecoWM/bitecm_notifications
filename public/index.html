@@ -13,19 +13,38 @@
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        var socket = io('http://localhost:3000');
+        var socket = io('http://localhost:8000');
 
         var client = 'admin';
 
         function connect () {
-          socket.emit('connect', client);
-          $('#app').append('<br> connected ' + client);
+          socket.emit('connect_host', client);
+          console.log('connecting');
         }
 
         connect();
 
+        socket.on('connected', function (data) {
+          $('#app').append('<br>cliente conectado ' + data.client);
+          $('#app').append('<br>clientes conectados ' + data.connectedClients);
+        });
+
+        socket.on('client connected', function (data) {
+          $('#app').append('<br>cliente conectado ' + data.client);
+          $('#app').append('<br>clientes conectados ' + data.connectedClients);
+        });
+
+        socket.on('client disconnected', function (data) {
+          $('#app').append('<br>cliente desconectado ' + data.client);
+          $('#app').append('<br>clientes conectados ' + data.connectedClients);
+        });
+
         socket.on('order completed', function (data) {
           $('#app').append('<br>' + JSON.stringify(data));
+        });
+
+        socket.on('connect', function () {
+          $('#app').append('<br> you are connected!');
         });
 
         socket.on('disconnect', function () {
