@@ -13,18 +13,10 @@ function Services () {
   self.checkPortingStatus = function (url, data = {}, config = []) {
     var request = axios.post(url, data, config)
       .then(function (response) {
-        console.log(response.data);
-        if (response.data == true) {
-          console.log("POST Correcto");
-          return true;
-        }
-        else {
-          console.log("POST Error");
-          return false;
-        }
+        return response.data;
       })
       .catch(function (err) {
-        console.log("POST Error");
+        console.log(err);
         return false;
       });
     return request;

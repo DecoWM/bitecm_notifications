@@ -66,6 +66,24 @@ app.post('/api/notify/order_complete', function (req, res) {
   res.json(response);
 });
 
+app.post('/api/schedule/test/:param', function (req, res) {
+  var response;
+  var payload = {};
+  if (req.body.dni != undefined && req.body.isdn != undefined) {
+    payload.order_id = req.params.param;
+    payload.dni = req.body.dni;
+    payload.isdn = req.body.isdn;
+    worker.push(payload, function (err) {
+      if (err) console.error('Error pushing work into the queue', err.stack);
+      else console.log('Work pushed into te queue: %o', payload);
+    });
+    response = { status: true };
+  } else {
+    response = { status: false };
+  }
+  res.json(response);
+});
+
 //404
 app.use(function(req, res, next) {
   var response = { msg: 'Route not found.' };

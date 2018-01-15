@@ -11,8 +11,8 @@ var options = {
   maxRetries: 10,
   backoff: {
     randomisationFactor: 0,
-    initialDelay:10,
-    maxDelay: 300
+    initialDelay: 1000,
+    maxDelay: 6000
   }
 };
 
@@ -31,7 +31,8 @@ function worker (id, payload, callback) {
 function sendRequest (payload, callback) {
   var err;
   var service = Services();
-  var url = 'https://10.121.6.249:8443/check_porting_status/'+payload.order_id;
+  var url = 'https://10.121.6.249:8443/api/check_porting_status/'+payload.order_id;
+  //var url = 'http://bitel-store.dev/api/test/'+payload.order_id;
 
   service.checkPortingStatus(url, payload).then(function (success) {
     if (!success) err = Error('Error in request.');
