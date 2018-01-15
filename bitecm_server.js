@@ -104,7 +104,7 @@ worker.on('error', function (err) {
 
 
 //SERVER
-server.listen(port, function () {
+server.listen(port, "0.0.0.0", function () {
   console.log('Server listening at port %d', port);
 });
 
