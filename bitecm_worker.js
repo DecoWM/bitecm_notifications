@@ -31,7 +31,7 @@ function worker (id, payload, callback) {
 function sendRequest (payload, callback) {
   var err;
   var service = Services();
-  var url = 'https://6df279fe-0da5-487d-a03f-5d4774bd871e.mock.pstmn.io/check_porting_status';
+  var url = 'https://10.121.6.249:8443/check_porting_status/'+payload.order_id;
 
   service.checkPortingStatus(url, payload).then(function (success) {
     if (!success) err = Error('Error in request.');

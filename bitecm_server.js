@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 
 var worker = require('./bitecm_worker');
 
@@ -26,7 +26,6 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
-
 //BODY PARSING
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,49 +35,34 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //ROUTING
-app.post('/api/schedule/check_porting_status', function (req, res) {
+app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
   var response;
   var payload = {};
-
   if (req.body.dni != undefined && req.body.isdn != undefined) {
+    payload.order_id = req.params.order_id;
     payload.dni = req.body.dni;
     payload.isdn = req.body.isdn;
-
     worker.push(payload, function (err) {
       if (err) console.error('Error pushing work into the queue', err.stack);
       else console.log('Work pushed into te queue: %o', payload);
     });
-
     response = { status: true };
   } else {
     response = { status: false };
   }
-
   res.json(response);
 });
 
 app.post('/api/notify/order_complete', function (req, res) {
   var response;
   var payload = {};
-
-  if ( req.body.product_id != undefined &&
-       req.body.category_name != undefined &&
-       req.body.brand_name != undefined &&
-       req.body.product_model != undefined &&
-       req.body.product_priority != undefined &&
-       req.body.updated_at != undefined &&
-       req.body.publish_at != undefined &&
-       req.body.active != undefined
-     ) {
-
+  if (req.body.order_id != undefined) {
     payload = req.body;
     io.emit('order completed', payload);
-
     response = { status: true };
   } else {
     response = { status: false };
   }
-
   res.json(response);
 });
 
@@ -115,34 +99,33 @@ io.on('connection', function (socket) {
 
   socket.on('add order', function (data) {
     socket.broadcast.emit('new order', {
-      username: socket.username,
+      username: socket.client.username,
       message: data
     });
   });
 
   //CONNECT
-  socket.on('connect', function (client) {
-    if (connection) return;
-
-    socket.client = client;
+  socket.on('connect_host', function (client) {
+    socket.client.username = client;
     ++connectedClients;
     connection = true;
     socket.emit('connected', {
+      client: socket.client.username,
       connectedClients: connectedClients
     });
 
     socket.broadcast.emit('client connected', {
-      client: socket.client,
+      client: socket.client.username,
       connectedClients: connectedClients
     });
   });
 
   //DISCONNECT
-  socket.on('disconnect', function () {
+  socket.on('disconnect_host', function () {
     if (connectedClients) {
       --connectedClients;
       socket.broadcast.emit('client disconnected', {
-        client: socket.client,
+        client: socket.client.username,
         connectedClients: connectedClients
       });
     }
