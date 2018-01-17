@@ -5,7 +5,14 @@ var cors = require('cors');
 var app = express();
 var bodyParser = require('body-parser');
 var path = require('path');
-var server = require('http').createServer(app);
+var fs = require('fs');
+var https = require('https');
+
+var privateKey  = fs.readFileSync('/u01/app/notific/ssl/bitel.com.pe.key', 'utf8');
+var certificate = fs.readFileSync('/u01/app/notific/ssl/bitel.com.pe.crt', 'utf8');
+const credentials = {key: privateKey, cert: certificate};
+var server = https.createServer(credentials, app);
+
 var io = require('socket.io')(server);
 var port = process.env.PORT || 8000;
 
