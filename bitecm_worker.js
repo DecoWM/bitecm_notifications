@@ -31,7 +31,7 @@ function worker (id, payload, callback) {
 function sendRequest (payload, callback) {
   var err;
   var service = Services();
-  var url = 'https://10.121.6.249:8443/api/check_porting_status/'+payload.order_id;
+  var url = 'https://10.121.8.25/api/check_porting_status/'+payload.order_id;
   //var url = 'http://bitel-store.dev/api/test/'+payload.order_id;
 
   service.checkPortingStatus(url, payload).then(function (success) {
