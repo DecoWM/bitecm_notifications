@@ -31,11 +31,23 @@ function worker (id, payload, callback) {
 function sendRequest (payload, callback) {
   var err;
   var service = Services();
-  var url = 'https://10.121.8.25/api/check_porting_status/'+payload.order_id;
+  var servers = ['10.121.6.249', '10.121.6.251'];
+  var selectedServer = Math.floor(Math.random() * Math.floor(2));
+  var alternateServer = (selectedServer == 0 ? 1 : 0);
+  var selectedUrl = 'https://'+servers[selectedServer]+'/api/check_porting_status/'+payload.order_id;
+  var alternateUrl = 'https://'+servers[alternateServer]+'/api/check_porting_status/'+payload.order_id;
+  //var url = 'https://10.121.8.25/api/check_porting_status/'+payload.order_id;
   //var url = 'http://bitel-store.dev/api/test/'+payload.order_id;
 
-  service.checkPortingStatus(url, payload).then(function (success) {
-    if (!success) err = Error('Error in request.');
+  // Intentar conexión con el servidor seleccionado
+  service.checkPortingStatus(selectedUrl, payload).then(function (success) {
+    if (!success){
+      console.log('Error in request to server %s. Trying to connect to server %s', selectedServer, alternateServer);
+      // Intentar conexión con el servidor alternativo
+      service.checkPortingStatus(alternateUrl, payload).then(function (success) {
+        if (!success) err = Error('Error in request.');
+      });
+    }
     callback(err);
   });
 }
