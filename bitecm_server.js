@@ -49,6 +49,7 @@ app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
     payload.order_id = req.params.order_id;
     payload.dni = req.body.dni;
     payload.isdn = req.body.isdn;
+    payload.porting_request_id = req.body.porting_request_id;
     worker.push(payload, function (err) {
       if (err) console.error('Error pushing work into the queue', err.stack);
       else console.log('Work pushed into te queue: %o', payload);
