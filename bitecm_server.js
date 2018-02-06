@@ -45,7 +45,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
   var response;
   var payload = {};
-  if (req.body.dni != undefined && req.body.isdn != undefined) {
+  if (req.body.dni !== undefined &&
+    req.body.isdn !== undefined &&
+    req.body.porting_request_id !== undefined) {
     payload.order_id = req.params.order_id;
     payload.dni = req.body.dni;
     payload.isdn = req.body.isdn;
@@ -64,7 +66,7 @@ app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
 app.post('/api/notify/order_complete', function (req, res) {
   var response;
   var payload = {};
-  if (req.body.order_id != undefined) {
+  if (req.body.order_id !== undefined) {
     payload = req.body;
     io.emit('order completed', payload);
     response = { status: true };
@@ -77,7 +79,9 @@ app.post('/api/notify/order_complete', function (req, res) {
 app.post('/api/schedule/test/:param', function (req, res) {
   var response;
   var payload = {};
-  if (req.body.dni != undefined && req.body.isdn != undefined) {
+  if (req.body.dni !== undefined &&
+    req.body.isdn !== undefined &&
+    req.body.porting_request_id !== undefined) {
     payload.order_id = req.params.param;
     payload.dni = req.body.dni;
     payload.isdn = req.body.isdn;
