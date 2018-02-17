@@ -11,7 +11,7 @@ var options = {
   maxRetries: 10,
   backoff: {
     randomisationFactor: 0,
-    initialDelay: 1000,
+    initialDelay: 5000,
     maxDelay: 6000
   }
 };
@@ -40,14 +40,34 @@ function sendRequest (payload, callback) {
   //var url = 'http://bitel-store.dev/api/test/'+payload.order_id;
 
   // Intentar conexión con el servidor seleccionado
-  service.checkPortingStatus(selectedUrl, payload).then(function (success) {
-    if (!success){
+  service.checkPortingStatus(selectedUrl, payload).then(function (result) {
+    if (!result.success){
       console.log('Error in request to server %s. Trying to connect to server %s', selectedServer, alternateServer);
       // Intentar conexión con el servidor alternativo
-      service.checkPortingStatus(alternateUrl, payload).then(function (success) {
-        if (!success) err = Error('Error in request.');
+      service.checkPortingStatus(alternateUrl, payload).then(function (result2) {
+        if (!result2.success) {
+          console.log('Error in request to server %s too. Aborting.', alternateServer);
+          err = Error('Error in request in all servers.');
+          callback(err);
+        } else {
+          if (result2.push) {
+            queue.push(payload, function (err) {
+              if (err) console.error('Error pushing work into the queue', err.stack);
+              else console.log('Work pushed into te queue: %o', payload);
+            });
+          }
+          callback(null);
+        }
       });
+    } else {
+      if (result.push) {
+        queue.push(payload, function (err) {
+          if (err) console.error('Error pushing work into the queue', err.stack);
+          else console.log('Work pushed into te queue: %o', payload);
+        });
+      }
+      callback(null);
     }
-    callback(err);
+    
   });
 }
