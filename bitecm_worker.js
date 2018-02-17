@@ -11,7 +11,7 @@ var options = {
   maxRetries: 10,
   backoff: {
     randomisationFactor: 0,
-    initialDelay: 1000,
+    initialDelay: 5000,
     maxDelay: 6000
   }
 };
@@ -48,20 +48,33 @@ function sendRequest (payload, callback) {
   //var url = 'http://bitel-store.dev/api/test/'+payload.order_id;
 
   // Intentar conexión con el servidor seleccionado
-  console.log('Trying... %s', selectedUrl);
-  service.checkPortingStatus(selectedUrl, payload, {httpsAgent: agent}).then(function (success) {
-    console.log('Connecting... %s', servers[selectedServer]);
-    if (!success){
+  service.checkPortingStatus(selectedUrl, payload, {httpsAgent: agent}).then(function (result) {
+    if (!result.success){
       console.log('Error in request to server %s. Trying to connect to server %s', servers[selectedServer], servers[alternateServer]);
       // Intentar conexión con el servidor alternativo
-      service.checkPortingStatus(alternateUrl, payload, {httpsAgent: agent}).then(function (success) {
-        if (!success) err = Error('Error in request.');
-        else console.log('Sucess... %s', servers[alternateServer]);
+      service.checkPortingStatus(alternateUrl, payload, {httpsAgent: agent}).then(function (result2) {
+        if (!result2.success) {
+          console.log('Error in request to server %s too. Aborting.', servers[alternateServer]);
+          err = Error('Error in request in all servers.');
+          callback(err);
+        } else {
+          if (result2.push) {
+            queue.push(payload, function (err) {
+              if (err) console.error('Error pushing work into the queue', err.stack);
+              else console.log('Work pushed into te queue: %o', payload);
+            });
+          }
+          callback(null);
+        }
       });
     } else {
-      console.log('Sucess... %s', servers[selectedServer]);
+      if (result.push) {
+        queue.push(payload, function (err) {
+          if (err) console.error('Error pushing work into the queue', err.stack);
+          else console.log('Work pushed into te queue: %o', payload);
+        });
+      }
+      callback(null);
     }
-    console.log('Returning callback...');
-    callback(err);
   });
 }
