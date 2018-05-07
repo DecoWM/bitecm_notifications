@@ -84,11 +84,11 @@ Queue.prototype.getNextAvailableJob = function(cb) {
       console.error('Error poping job from "%s" queue ', queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log(data);
       if (data.length) {
+        console.log(data);
         console.log('Job poped from "%s" queue', queue().name);
       } else {
-        console.log('No jobs found in "%s" queue', queue().name);
+        //console.log('No jobs found in "%s" queue', queue().name);
       }
       var job = Job.parse(data);
       callBack(cb, null, job);

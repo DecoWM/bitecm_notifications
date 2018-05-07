@@ -31,7 +31,7 @@ module.exports = worker();
 
 Worker.prototype.daemon = function() {
   if (!worker().interval) return;
-  console.log('ticking each '+worker().interval+' miliseconds');
+  //console.log('ticking each '+worker().interval+' miliseconds');
   worker().work();
   setTimeout(worker().daemon, worker().interval);
 };

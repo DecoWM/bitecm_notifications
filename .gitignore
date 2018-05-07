@@ -1,2 +1,3 @@
 /node_modules
-/bitecm_notifications
+/worker/level/db/
+env.json
