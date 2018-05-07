@@ -8,15 +8,17 @@ var path = require('path');
 var fs = require('fs');
 var https = require('https');
 
-var privateKey  = fs.readFileSync('/u01/app/notific/ssl/bitel.com.pe.key', 'utf8');
-var certificate = fs.readFileSync('/u01/app/notific/ssl/bitel.com.pe.crt', 'utf8');
+var env = require('./env.json');
+
+var privateKey  = fs.readFileSync(env.ssl.key, 'utf8');
+var certificate = fs.readFileSync(env.ssl.cert, 'utf8');
 const credentials = {key: privateKey, cert: certificate};
 var server = https.createServer(credentials, app);
 
 var io = require('socket.io')(server);
 var port = process.env.PORT || 8000;
 
-var worker = require('./bitecm_worker');
+//var worker = require('./worker/level/worker');
 
 //CORS
 var allowedOrigins = [ ];
@@ -42,7 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //ROUTING
-app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
+/*app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
   var response;
   var payload = {};
   if (req.body.dni !== undefined &&
@@ -61,7 +63,7 @@ app.post('/api/schedule/check_porting_status/:order_id', function (req, res) {
     response = { status: false };
   }
   res.json(response);
-});
+});*/
 
 app.post('/api/notify/order_complete', function (req, res) {
   var response;
@@ -76,7 +78,7 @@ app.post('/api/notify/order_complete', function (req, res) {
   res.json(response);
 });
 
-app.post('/api/schedule/test/:param', function (req, res) {
+/*app.post('/api/schedule/test/:param', function (req, res) {
   var response;
   var payload = {};
   if (req.body.dni !== undefined &&
@@ -95,7 +97,7 @@ app.post('/api/schedule/test/:param', function (req, res) {
     response = { status: false };
   }
   res.json(response);
-});
+});*/
 
 //404
 app.use(function(req, res, next) {
@@ -111,9 +113,9 @@ app.use(function(err, req, res, next) {
   res.status(500).json(response);
 });
 
-worker.on('error', function (err) {
+/*worker.on('error', function (err) {
   console.error(err.stack);
-});
+});*/
 
 
 //SERVER

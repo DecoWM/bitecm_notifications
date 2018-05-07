@@ -4,7 +4,8 @@
   "description": "Queue and Notifications for Bitel Store",
   "main": "bitecm_server.js",
   "scripts": {
-    "start": "NODE_ENV=production node bitecm_server"
+    "start": "NODE_ENV=production node bitecm_server",
+    "worker": "NODE_ENV=production node bitecm_worker"
   },
   "author": "Rodolfo Tomas Taboada Alvines <rodolfotabo@gmail.com>",
   "license": "UNLICENSED",
@@ -16,6 +17,8 @@
     "express": "^4.16.2",
     "level": "^2.1.1",
     "level-jobs": "^2.0.0",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "moment": "^2.22.1",
+    "node-mysql": "0.4.2"
   }
 }
