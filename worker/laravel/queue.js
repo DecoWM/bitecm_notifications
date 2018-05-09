@@ -90,7 +90,7 @@ Queue.prototype.getNextAvailableJob = function(cb) {
       } else {
         //console.log('No jobs found in "%s" queue', queue().name);
       }
-      var job = Job.parse(data);
+      var job = Job.parse(data[0]);
       callBack(cb, null, job);
     }
   });
