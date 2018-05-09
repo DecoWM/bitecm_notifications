@@ -64,15 +64,19 @@ Worker.prototype.runJob = function(job) {
     job.fire(function(status) {
       switch(status) {
         case Job.COMPLETED:
+          console.log('Job #%s completed', job.id);
           worker().terminateJob(job);
         break;
         case Job.FOR_LATER:
+          console.log('Job #%s not ready', job.id);
           worker().retryLater(job);
         break;
         case Job.CORRUPTED:
+          console.log('Job #%s corrupted', job.id);
           worker().terminateJob(job);
         break;
         case Job.FAILED:
+          console.log('Job #%s failed', job.id);
           //do nothing
         break;
       }
@@ -93,7 +97,7 @@ Worker.prototype.terminateJob = function(job) {
 Worker.prototype.retryLater = function(job) {
   queue.reserveUnlock(job, function (err) {
     if (!err) {
-      console.log('Job #%s retry', job.id);
+      console.log('Job #%s pushed for later retry', job.id);
     }
   });
 };
