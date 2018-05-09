@@ -26,7 +26,7 @@ Queue.currentTime = function() {
 };
 
 Queue.reservedLock = function() {
-  return 9999999999;
+  return 2147385600;
 };
 
 function queue() {
