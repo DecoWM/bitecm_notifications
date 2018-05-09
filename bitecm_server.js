@@ -6,14 +6,19 @@ var app = express();
 var bodyParser = require('body-parser');
 var path = require('path');
 var fs = require('fs');
-var https = require('https');
 
 var env = require('./env.json');
 
-var privateKey  = fs.readFileSync(env.ssl.key, 'utf8');
-var certificate = fs.readFileSync(env.ssl.cert, 'utf8');
-const credentials = {key: privateKey, cert: certificate};
-var server = https.createServer(credentials, app);
+if (env.ssl.key.length && env.ssl.cert.length) {
+  var https = require('https');
+  var privateKey  = fs.readFileSync(env.ssl.key, 'utf8');
+  var certificate = fs.readFileSync(env.ssl.cert, 'utf8');
+  const credentials = {key: privateKey, cert: certificate};
+  var server = https.createServer(credentials, app);
+} else {
+  var http = require('http');
+  var server = http.createServer(app);
+}
 
 var io = require('socket.io')(server);
 var port = process.env.PORT || 8000;

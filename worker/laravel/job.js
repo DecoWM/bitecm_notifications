@@ -11,6 +11,7 @@ function Job(data) {
   this.reserved_at = data.reserved_at;
   this.available_at = data.available_at;
   this.created_at = data.created_at;
+  console.log(this);
 }
 
 Job.parse = function(data) {
@@ -47,12 +48,12 @@ Job.prototype.fire = function(callback) {
 
   if (servers.length > 1) {
     selectedServer = Math.floor(Math.random() * Math.floor(2));
-    selectedUrl = servers[selectedServer]+'/api/check_porting_status/'+payload.order_id;
+    selectedUrl = servers[selectedServer]+'/api/check_porting_status/'+job.payload.order_id;
     var alternateServer = (selectedServer == 0 ? 1 : 0);
-    var alternateUrl = servers[alternateServer]+'/api/check_porting_status/'+payload.order_id;
+    var alternateUrl = servers[alternateServer]+'/api/check_porting_status/'+job.payload.order_id;
   } else {
     selectedServer = 0;
-    selectedUrl = servers[selectedServer]+'/api/check_porting_status/'+payload.order_id;
+    selectedUrl = servers[selectedServer]+'/api/check_porting_status/'+job.payload.order_id;
   }
 
   // Intentar conexión con el servidor seleccionado
