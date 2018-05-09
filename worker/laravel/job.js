@@ -1,4 +1,5 @@
 var service = require('./service');
+var https = require('https');
 
 var env = require('../../env.json');
 var servers = env.servers;
