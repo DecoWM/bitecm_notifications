@@ -97,7 +97,7 @@ Queue.prototype.getNextAvailableJob = function(cb) {
 };
 
 Queue.prototype.markJobAsReserved = function(job, cb) {
-  var params = [queue().table, Queue.reservedLock(), jon.increment(), job.id];
+  var params = [queue().table, Queue.reservedLock(), job.increment(), job.id];
   var query = "UPDATE ??\
     SET reserved_at = ?, attempts = ?\
     WHERE id = ?";
