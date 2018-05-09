@@ -7,7 +7,7 @@ function Job(data) {
   this.id = data.id;
   this.queue = data.queue;
   this.payload = JSON.parse(data.payload);
-  this.attemps = data.attemps;
+  this.attempts = data.attempts;
   this.reserved_at = data.reserved_at;
   this.available_at = data.available_at;
   this.created_at = data.created_at;
@@ -81,5 +81,5 @@ Job.prototype.fire = function(callback) {
 };
 
 Job.prototype.increment = function() {
-  return this.attemps++;
+  return this.attempts++;
 };
