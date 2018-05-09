@@ -103,10 +103,10 @@ Queue.prototype.markJobAsReserved = function(job, cb) {
     WHERE id = ?";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error reserving job in "%s" queue ', queue().name, error.stack);
+      console.error('Error reserving job #%s in "%s" queue ', job.id, queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job reserved in "%s" queue', queue().name);
+      console.log('Job #%s reserved in "%s" queue', job.id, queue().name);
       callBack(cb, null);
     }
   });
@@ -119,10 +119,10 @@ Queue.prototype.reserveUnlock = function(job, cb) {
     WHERE id = ?";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error unlocking job reserve in "%s" queue ', queue().name, error.stack);
+      console.error('Error unlocking job #%s reserve in "%s" queue ', job.id, queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job unlocked for reserve in "%s" queue', queue().name);
+      console.log('Job #%s unlocked for reserve in "%s" queue', job.id, queue().name);
       callBack(cb, null);
     }
   });
@@ -147,10 +147,10 @@ Queue.prototype.delete = function(job, cb) {
   var query = "DELETE FROM ?? WHERE id = ?";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error deleting job from "%s" queue ', queue().name, error.stack);
+      console.error('Error deleting job #%s from "%s" queue ', job.id, queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job deleted from "%s" queue', queue().name);
+      console.log('Job #%s deleted from "%s" queue', job.id, queue().name);
       callBack(cb, null);
     }
   });
