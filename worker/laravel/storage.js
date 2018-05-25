@@ -1,6 +1,6 @@
 var db = require('node-mysql');
 var callBack = require('./callback');
-
+var Log = require('./log');
 var env = require('../../env.json');
 var connectionInfo = env.connectionInfo;
 
@@ -13,7 +13,7 @@ Storage._instance = null;
 
 Storage.instance = function() {
   if (this._instance == null) {
-    console.log('init storage instance');
+    Log.info('init storage instance');
     this._instance = new Storage();
   }
   return this._instance;

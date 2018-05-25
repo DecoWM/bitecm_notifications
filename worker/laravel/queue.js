@@ -1,5 +1,6 @@
 var storage = require('./storage');
 var Job = require('./job');
+var Log = require('./log');
 var callBack = require('./callback');
 var env = require('../../env.json');
 
@@ -15,7 +16,7 @@ Queue._instance = null;
 
 Queue.instance = function() {
   if (this._instance == null) {
-    console.log('init queue instance');
+    Log.info('init queue instance');
     this._instance = new Queue();
   }
   return this._instance;
@@ -81,12 +82,12 @@ Queue.prototype.getNextAvailableJob = function(cb) {
     LIMIT 1";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error poping job from "%s" queue ', queue().name, error.stack);
+      Log.error('Error poping job from "%s" queue ', queue().name, error.stack);
       callBack(cb, error, null);
     } else {
       if (data.length) {
-        console.log(data);
-        console.log('Job poped from "%s" queue', queue().name);
+        Log.info(data);
+        Log.info('Job poped from "%s" queue', queue().name);
       } else {
         //console.log('No jobs found in "%s" queue', queue().name);
       }
@@ -103,10 +104,10 @@ Queue.prototype.markJobAsReserved = function(job, cb) {
     WHERE id = ?";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error reserving job #%s in "%s" queue ', job.id, queue().name, error.stack);
+      Log.error('Error reserving job #%s in "%s" queue ', job.id, queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job #%s reserved in "%s" queue', job.id, queue().name);
+      Log.info('Job #%s reserved in "%s" queue', job.id, queue().name);
       callBack(cb, null);
     }
   });
@@ -119,10 +120,10 @@ Queue.prototype.reserveUnlock = function(job, cb) {
     WHERE id = ?";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error unlocking job #%s reserve in "%s" queue ', job.id, queue().name, error.stack);
+      Log.error('Error unlocking job #%s reserve in "%s" queue ', job.id, queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job #%s unlocked for reserve in "%s" queue', job.id, queue().name);
+      Log.info('Job #%s unlocked for reserve in "%s" queue', job.id, queue().name);
       callBack(cb, null);
     }
   });
@@ -133,10 +134,10 @@ Queue.prototype.push = function(job, cb) {
   var query = "INSERT INTO ?? () VALUES (?,?,?)";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error pushing job into "%s" queue ', queue().name, error.stack);
+      Log.error('Error pushing job into "%s" queue ', queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job pushed into "%s" queue', queue().name);
+      Log.info('Job pushed into "%s" queue', queue().name);
       callBack(cb, null);
     }
   });
@@ -147,10 +148,10 @@ Queue.prototype.delete = function(job, cb) {
   var query = "DELETE FROM ?? WHERE id = ?";
   storage.execQuery(query, params, function(error, data) {
     if (error) {
-      console.error('Error deleting job #%s from "%s" queue ', job.id, queue().name, error.stack);
+      Log.error('Error deleting job #%s from "%s" queue ', job.id, queue().name, error.stack);
       callBack(cb, error, null);
     } else {
-      console.log('Job #%s deleted from "%s" queue', job.id, queue().name);
+      Log.info('Job #%s deleted from "%s" queue', job.id, queue().name);
       callBack(cb, null);
     }
   });

@@ -1,9 +1,11 @@
+var Log = require('./log');
+
 function callBack(cb, error, data, other) {
   if(cb) {
     try {
       cb(error, data, other);
     } catch (err) {
-      console.log('CALLBACK ERROR', err);
+      Log.error('CALLBACK ERROR', err);
     }
   }
 }

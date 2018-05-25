@@ -1,5 +1,6 @@
 /* jshint esversion:6 */
 var axios = require('axios');
+var Log = require('./log');
 
 function Service() {
   
@@ -9,7 +10,7 @@ Service._instance = null;
 
 Service.instance = function() {
   if (this._instance == null) {
-    console.log('init service instance');
+    Log.info('init service instance');
     this._instance = new Service();
   }
   return this._instance;
@@ -35,7 +36,7 @@ Service.prototype.checkPortingStatus = function (url, data = {}, config = []) {
       };
     })
     .catch(function (err) {
-      console.log(err);
+      Log.error(err);
       return { reached: false };
     });
   return request;

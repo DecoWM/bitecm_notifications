@@ -1,6 +1,6 @@
 var service = require('./service');
 var https = require('https');
-
+var Log = require('./log');
 var env = require('../../env.json');
 var servers = env.servers;
 
@@ -12,7 +12,7 @@ function Job(data) {
   this.reserved_at = data.reserved_at;
   this.available_at = data.available_at;
   this.created_at = data.created_at;
-  console.log(this);
+  Log.info(this);
 }
 
 Job.parse = function(data) {
@@ -61,12 +61,13 @@ Job.prototype.fire = function(callback) {
   service.checkPortingStatus(selectedUrl, job.payload, {httpsAgent: agent}).then(function (result) {
     if (!result.reached) {
       if (servers.length > 1) {
-        console.log('Error in request to server %s. Trying to connect to server %s', servers[selectedServer], servers[alternateServer]);
+        Log.warning('Error in request to server %s. Trying to connect to server %s', servers[selectedServer], servers[alternateServer]);
         // Intentar conexión con el servidor alternativo
         service.checkPortingStatus(alternateUrl, job.payload, {httpsAgent: agent}).then(function (result2) {
           if (!result2.reached) {
-            console.log('Error in request to server %s too. Aborting.', servers[alternateServer]);
+            Log.warning('Error in request to server %s too. Aborting.', servers[alternateServer]);
             err = Error('Error in request in all servers.');
+            Log.error(err.stack);
             callback(Job.FAILED);
           } else {
             callback(result.status);
